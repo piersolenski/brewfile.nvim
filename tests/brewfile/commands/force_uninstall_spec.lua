@@ -10,10 +10,16 @@ describe("commands.force_uninstall", function()
     stub(vim.fn, "mode").returns("n")
     stub(vim.fn, "getline").returns('brew "ripgrep"')
     stub(vim.fn, "confirm").returns(1)
-    stub(vim.cmd, "split")
-    stub(vim.cmd, "startinsert")
+    -- avoid side effects from terminal
     local original_cmd = vim.cmd
-    vim.cmd = function() end
+    vim.cmd = setmetatable({
+      split = function() end,
+      startinsert = function() end,
+    }, {
+      __call = function(_, _)
+        -- swallow terminal invocation
+      end,
+    })
     stub(vim.api, "nvim_get_current_buf").returns(1)
     stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
 
@@ -24,8 +30,6 @@ describe("commands.force_uninstall", function()
     vim.fn.mode:revert()
     vim.fn.getline:revert()
     vim.fn.confirm:revert()
-    vim.cmd.split:revert()
-    vim.cmd.startinsert:revert()
     vim.api.nvim_get_current_buf:revert()
     vim.api.nvim_buf_get_name:revert()
     vim.cmd = original_cmd

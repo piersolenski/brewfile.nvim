@@ -11,10 +11,15 @@ describe("commands.upgrade", function()
     stub(vim.fn, "getline").returns('brew "fzf"')
     stub(vim.fn, "confirm").returns(1)
     stub(vim, "notify")
-    stub(vim.cmd, "split")
-    stub(vim.cmd, "startinsert")
     local original_cmd = vim.cmd
-    vim.cmd = function() end
+    vim.cmd = setmetatable({
+      split = function() end,
+      startinsert = function() end,
+    }, {
+      __call = function(_, _)
+        -- swallow terminal invocation
+      end,
+    })
     stub(vim.api, "nvim_get_current_buf").returns(1)
     stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
 
@@ -24,8 +29,6 @@ describe("commands.upgrade", function()
     vim.fn.getline:revert()
     vim.fn.confirm:revert()
     vim.notify:revert()
-    vim.cmd.split:revert()
-    vim.cmd.startinsert:revert()
     vim.api.nvim_get_current_buf:revert()
     vim.api.nvim_buf_get_name:revert()
     vim.cmd = original_cmd

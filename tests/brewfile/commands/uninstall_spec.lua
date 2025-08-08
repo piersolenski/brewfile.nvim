@@ -1,6 +1,5 @@
 local plugin = require("brewfile")
 local stub = require("luassert.stub")
-local match = require("luassert.match")
 
 describe("commands.uninstall", function()
   before_each(function()
@@ -22,10 +21,15 @@ describe("commands.uninstall", function()
       return 'tap "homebrew/cask"'
     end)
     stub(vim.fn, "confirm").returns(1)
-    stub(vim.cmd, "split")
-    stub(vim.cmd, "startinsert")
     local original_cmd = vim.cmd
-    vim.cmd = function() end
+    vim.cmd = setmetatable({
+      split = function() end,
+      startinsert = function() end,
+    }, {
+      __call = function(_, _)
+        -- swallow terminal invocation
+      end,
+    })
     stub(vim.api, "nvim_get_current_buf").returns(1)
     stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
 
@@ -37,8 +41,6 @@ describe("commands.uninstall", function()
     vim.fn.getpos:revert()
     vim.fn.getline:revert()
     vim.fn.confirm:revert()
-    vim.cmd.split:revert()
-    vim.cmd.startinsert:revert()
     vim.api.nvim_get_current_buf:revert()
     vim.api.nvim_buf_get_name:revert()
     vim.cmd = original_cmd

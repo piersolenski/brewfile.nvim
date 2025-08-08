@@ -19,7 +19,7 @@ describe("parsing", function()
       'brew "fzf"',
       '  brew   "ripgrep"  ',
       'tap "homebrew/cask"',
-      '# brew "commented"',
+      '  # brew "commented"',
       ' # tap "ignored/tap" ',
       'brew "homebrew/cask/iterm2"',
     }
@@ -44,6 +44,6 @@ describe("config", function()
   it("rejects invalid value", function()
     assert.error_matches(function()
       plugin.setup({ dump_on_change = "bananas" })
-    end, "Invalid value for dump_on_change")
+    end, "dump_on_change: expected boolean, got string")
   end)
 end)

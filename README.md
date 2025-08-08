@@ -31,7 +31,7 @@ A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https:
             mode = { "n", "v" },
 		},
         {
-            "<leader>bU",
+            "<leader>bb",
             function()
                 require("brewfile").dump()
             end,

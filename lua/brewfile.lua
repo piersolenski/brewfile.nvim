@@ -1,14 +1,12 @@
--- Homebrew Brewfile Management
 local M = {}
 
--- configuration
 M._defaults = {
   -- when true, after a brew action completes, run `brew bundle dump` and reload buffer
   dump_on_change = true,
 }
+
 M._config = vim.deepcopy(M._defaults)
 
--- setup for lazy.nvim and others
 function M.setup(opts)
   M._config = vim.tbl_deep_extend("force", vim.deepcopy(M._defaults), opts or {})
 end
@@ -58,68 +56,67 @@ local function run_system(args, on_exit)
 end
 
 local function dump_brewfile_and_reload(brewfile_path, target_bufnr)
-    if not brewfile_path or brewfile_path == "" then
-        return
-    end
+  if not brewfile_path or brewfile_path == "" then
+    return
+  end
 
-    -- Detect if buffer has unsaved changes; used to decide reload vs prompt
-    local buffer_modified = false
-    if target_bufnr and vim.api.nvim_buf_is_valid(target_bufnr) then
-        buffer_modified = vim.api.nvim_get_option_value("modified", { buf = target_bufnr })
-    end
+  -- Detect if buffer has unsaved changes; used to decide reload vs prompt
+  local buffer_modified = false
+  if target_bufnr and vim.api.nvim_buf_is_valid(target_bufnr) then
+    buffer_modified = vim.api.nvim_get_option_value("modified", { buf = target_bufnr })
+  end
 
-    local args = {
-        "brew",
-        "bundle",
-        "dump",
-        "--force",
-        string.format("--file=%s", brewfile_path),
-        "--describe",
-    }
+  local args = {
+    "brew",
+    "bundle",
+    "dump",
+    "--force",
+    string.format("--file=%s", brewfile_path),
+    "--describe",
+  }
 
-    run_system(args, function(code)
-            if code == 0 then
-                if target_bufnr and vim.api.nvim_buf_is_valid(target_bufnr) then
-                    local wins = vim.fn.win_findbuf(target_bufnr)
-                    if #wins > 0 then
-                        vim.api.nvim_win_call(wins[1], function()
-                            -- Determine filetype once
-                            local ok_ft, ft = pcall(function()
-                                return vim.filetype.match({ buf = target_bufnr })
-                                    or vim.filetype.match({ filename = brewfile_path })
-                            end)
+  run_system(args, function(code)
+    if code == 0 then
+      if target_bufnr and vim.api.nvim_buf_is_valid(target_bufnr) then
+        local wins = vim.fn.win_findbuf(target_bufnr)
+        if #wins > 0 then
+          vim.api.nvim_win_call(wins[1], function()
+            -- Determine filetype once
+            local ok_ft, ft = pcall(function()
+              return vim.filetype.match({ buf = target_bufnr }) or vim.filetype.match({ filename = brewfile_path })
+            end)
 
-                            if not buffer_modified then
-                                -- Buffer unmodified: reload from disk and reapply ft/syntax
-                                pcall(function()
-                                    vim.cmd("silent edit!")
-                                end)
-                                if ok_ft and ft and ft ~= "" then
-                                    pcall(function()
-                                        vim.bo[target_bufnr].filetype = ft
-                                    end)
-                                    pcall(function()
-                                        if vim.treesitter and vim.treesitter.start then
-                                            vim.treesitter.start(target_bufnr, ft)
-                                        end
-                                    end)
-                                    pcall(function()
-                                        vim.cmd("silent! setlocal syntax=" .. ft)
-                                    end)
-                                end
-                            else
-                                -- Buffer has local edits: trigger timestamp check to let user decide (W12)
-                                pcall(function()
-                                    vim.cmd("checktime")
-                                end)
-                            end
-                        end)
-                    end
-                end
+            if not buffer_modified then
+              -- Buffer unmodified: reload from disk and reapply ft/syntax
+              pcall(function()
+                vim.cmd("silent edit!")
+              end)
+              if ok_ft and ft and ft ~= "" then
+                pcall(function()
+                  vim.bo[target_bufnr].filetype = ft
+                end)
+                pcall(function()
+                  if vim.treesitter and vim.treesitter.start then
+                    vim.treesitter.start(target_bufnr, ft)
+                  end
+                end)
+                pcall(function()
+                  vim.cmd("silent! setlocal syntax=" .. ft)
+                end)
+              end
             else
-                vim.notify("brew bundle dump failed", vim.log.levels.ERROR)
+              -- Buffer has local edits: trigger timestamp check to let user decide (W12)
+              pcall(function()
+                vim.cmd("checktime")
+              end)
             end
-    end)
+          end)
+        end
+      end
+    else
+      vim.notify("brew bundle dump failed", vim.log.levels.ERROR)
+    end
+  end)
 end
 
 -- Function to get the current line or visual selection
@@ -162,29 +159,29 @@ local function run_brew_command(command, packages)
     2
   )
 
-    if choice == 1 then
-        -- Build the brew command
-        local brew_cmd = string.format("brew %s %s", command, table.concat(packages, " "))
-        vim.notify(string.format("Running: %s", brew_cmd), vim.log.levels.INFO)
+  if choice == 1 then
+    -- Build the brew command
+    local brew_cmd = string.format("brew %s %s", command, table.concat(packages, " "))
+    vim.notify(string.format("Running: %s", brew_cmd), vim.log.levels.INFO)
 
-        -- Capture the originating buffer (the Brewfile) before opening terminal
-        local brewfile_bufnr = vim.api.nvim_get_current_buf()
-        local brewfile_path = vim.api.nvim_buf_get_name(brewfile_bufnr)
+    -- Capture the originating buffer (the Brewfile) before opening terminal
+    local brewfile_bufnr = vim.api.nvim_get_current_buf()
+    local brewfile_path = vim.api.nvim_buf_get_name(brewfile_bufnr)
 
-        -- Open a split terminal and optionally hook into TermClose
-        vim.cmd.split()
-        vim.cmd(string.format("terminal %s", brew_cmd))
-        vim.cmd.startinsert()
-        if M._config.dump_on_change then
-          vim.api.nvim_create_autocmd("TermClose", {
-              buffer = 0, -- current (terminal) buffer
-              once = true,
-              callback = function()
-                  dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
-              end,
-          })
-        end
+    -- Open a split terminal and optionally hook into TermClose
+    vim.cmd.split()
+    vim.cmd(string.format("terminal %s", brew_cmd))
+    vim.cmd.startinsert()
+    if M._config.dump_on_change then
+      vim.api.nvim_create_autocmd("TermClose", {
+        buffer = 0, -- current (terminal) buffer
+        once = true,
+        callback = function()
+          dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
+        end,
+      })
     end
+  end
 end
 
 function M.upgrade()
@@ -316,8 +313,8 @@ function M.info()
     vim.cmd(string.format("split | terminal %s", brew_cmd))
     vim.notify(string.format("Running: %s", brew_cmd), vim.log.levels.INFO)
   else
-    vim.notify("No valid packages found", vim.log.levels.WARN)
   end
+  vim.notify("No valid packages found", vim.log.levels.WARN)
 end
 
 --- Dump Brewfile and refresh the buffer

@@ -1,0 +1,11 @@
+local plugin = require("brewfile")
+
+describe("brewfile.nvim API", function()
+  it("exposes expected functions", function()
+    assert(type(plugin.install) == "function", "install should be a function")
+    assert(type(plugin.upgrade) == "function", "upgrade should be a function")
+    assert(type(plugin.uninstall) == "function", "uninstall should be a function")
+    assert(type(plugin.force_uninstall) == "function", "force_uninstall should be a function")
+    assert(type(plugin.info) == "function", "info should be a function")
+  end)
+end)

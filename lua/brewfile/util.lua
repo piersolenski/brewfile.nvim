@@ -8,10 +8,14 @@ function M.extract_package_names(lines)
     clean_line = clean_line:gsub("%s+$", "")
 
     local package = clean_line:match('brew%s+"([^"]+)"')
-    if package then table.insert(packages, package) end
+    if package then
+      table.insert(packages, package)
+    end
 
     local tap = clean_line:match('tap%s+"([^"]+)"')
-    if tap then table.insert(packages, tap) end
+    if tap then
+      table.insert(packages, tap)
+    end
   end
   return packages
 end
@@ -24,10 +28,14 @@ function M.parse_packages_and_taps(lines)
     clean_line = clean_line:gsub("%s+$", "")
 
     local package = clean_line:match('brew%s+"([^"]+)"')
-    if package then table.insert(regular_packages, package) end
+    if package then
+      table.insert(regular_packages, package)
+    end
 
     local tap = clean_line:match('tap%s+"([^"]+)"')
-    if tap then table.insert(taps, tap) end
+    if tap then
+      table.insert(taps, tap)
+    end
   end
   return regular_packages, taps
 end
@@ -52,20 +60,26 @@ end
 function M.run_system(args, on_exit)
   if vim.system then
     vim.system(args, { text = true }, function(obj)
-      vim.schedule(function() on_exit(obj.code) end)
+      vim.schedule(function()
+        on_exit(obj.code)
+      end)
     end)
   else
     vim.fn.jobstart(args, {
       stdout_buffered = true,
       on_exit = function(_, code)
-        vim.schedule(function() on_exit(code) end)
+        vim.schedule(function()
+          on_exit(code)
+        end)
       end,
     })
   end
 end
 
 function M.dump_brewfile_and_reload(brewfile_path, target_bufnr)
-  if not brewfile_path or brewfile_path == "" then return end
+  if not brewfile_path or brewfile_path == "" then
+    return
+  end
 
   local buffer_modified = false
   if target_bufnr and vim.api.nvim_buf_is_valid(target_bufnr) then
@@ -73,7 +87,10 @@ function M.dump_brewfile_and_reload(brewfile_path, target_bufnr)
   end
 
   local args = {
-    "brew", "bundle", "dump", "--force",
+    "brew",
+    "bundle",
+    "dump",
+    "--force",
     string.format("--file=%s", brewfile_path),
     "--describe",
   }
@@ -85,23 +102,30 @@ function M.dump_brewfile_and_reload(brewfile_path, target_bufnr)
         if #wins > 0 then
           vim.api.nvim_win_call(wins[1], function()
             local ok_ft, ft = pcall(function()
-              return vim.filetype.match({ buf = target_bufnr })
-                or vim.filetype.match({ filename = brewfile_path })
+              return vim.filetype.match({ buf = target_bufnr }) or vim.filetype.match({ filename = brewfile_path })
             end)
 
             if not buffer_modified then
-              pcall(function() vim.cmd("silent edit!") end)
+              pcall(function()
+                vim.cmd("silent edit!")
+              end)
               if ok_ft and ft and ft ~= "" then
-                pcall(function() vim.bo[target_bufnr].filetype = ft end)
+                pcall(function()
+                  vim.bo[target_bufnr].filetype = ft
+                end)
                 pcall(function()
                   if vim.treesitter and vim.treesitter.start then
                     vim.treesitter.start(target_bufnr, ft)
                   end
                 end)
-                pcall(function() vim.cmd("silent! setlocal syntax=" .. ft) end)
+                pcall(function()
+                  vim.cmd("silent! setlocal syntax=" .. ft)
+                end)
               end
             else
-              pcall(function() vim.cmd("checktime") end)
+              pcall(function()
+                vim.cmd("checktime")
+              end)
             end
           end)
         end

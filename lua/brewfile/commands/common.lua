@@ -17,7 +17,9 @@ function M.run_brew_command(command, packages)
     2
   )
 
-  if choice ~= 1 then return end
+  if choice ~= 1 then
+    return
+  end
 
   local brew_cmd = string.format("brew %s %s", command, table.concat(packages, " "))
   vim.notify(string.format("Running: %s", brew_cmd), vim.log.levels.INFO)

@@ -3,6 +3,12 @@ TESTS_DIR=tests/
 
 .PHONY: test
 
+format:
+	stylua .
+
+lint:
+	@luacheck lua
+
 test:
 	@nvim \
 		--headless \

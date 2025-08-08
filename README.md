@@ -4,12 +4,12 @@ A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https:
 
 ## ✨ Features
 
-- **Install, Upgrade, Uninstall, Force Uninstall**: Run Homebrew commands on selected lines or the current line.
-- **Tap Management**: Handles both regular packages and taps.
-- **Interactive Confirmation**: Prompts before running destructive actions.
-- **Automatic Brewfile Reload**: Updates the buffer after changes.
-- **Terminal Integration**: Opens a split terminal for command output.
-- **Visual Selection Support**: Works with visual mode selections.
+* **Package Actions**: Install, upgrade, uninstall, force uninstall, and view info for packages.
+* **Tap Management**: Works with both regular packages and taps.
+* **Interactive Confirmation**: Prompts before performing destructive actions.
+* **Auto Brewfile Reload**: Dumps Brewfile and refreshes the buffer after changes.
+* **Terminal Integration**: Briefly opens a split terminal for command output.
+* **Visual Selection Support**: Manage multiple packages at once using visual mode.
 
 ## 🔩 Installation
 

@@ -3,7 +3,8 @@ local M = {}
 function M.extract_package_names(lines)
   local packages = {}
   for _, line in ipairs(lines) do
-    local clean_line = line:gsub("^%s*#%s*", "")
+    if line:match("^%s*#") then goto continue end
+    local clean_line = line
     clean_line = clean_line:gsub("^%s+", "")
     clean_line = clean_line:gsub("%s+$", "")
 
@@ -16,6 +17,7 @@ function M.extract_package_names(lines)
     if tap then
       table.insert(packages, tap)
     end
+    ::continue::
   end
   return packages
 end
@@ -23,7 +25,8 @@ end
 function M.parse_packages_and_taps(lines)
   local regular_packages, taps = {}, {}
   for _, line in ipairs(lines) do
-    local clean_line = line:gsub("^%s*#%s*", "")
+    if line:match("^%s*#") then goto continue end
+    local clean_line = line
     clean_line = clean_line:gsub("^%s+", "")
     clean_line = clean_line:gsub("%s+$", "")
 
@@ -36,6 +39,7 @@ function M.parse_packages_and_taps(lines)
     if tap then
       table.insert(taps, tap)
     end
+    ::continue::
   end
   return regular_packages, taps
 end

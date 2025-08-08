@@ -1,4 +1,6 @@
 local plugin = require("brewfile")
+local config = require("brewfile.config")
+local util = require("brewfile.util")
 
 describe("brewfile.nvim API", function()
   it("exposes expected functions", function()
@@ -8,5 +10,35 @@ describe("brewfile.nvim API", function()
     assert(type(plugin.force_uninstall) == "function", "force_uninstall should be a function")
     assert(type(plugin.info) == "function", "info should be a function")
     assert(type(plugin.dump) == "function", "dump should be a function")
+  end)
+end)
+
+describe("parsing", function()
+  it("extracts packages and taps from mixed lines", function()
+    local lines = {
+      'brew "fzf"',
+      '  brew   "ripgrep"  ',
+      'tap "homebrew/cask"',
+      '# brew "commented"',
+      ' # tap "ignored/tap" ',
+      'brew "homebrew/cask/iterm2"',
+    }
+    local pkgs, taps = util.parse_packages_and_taps(lines)
+    assert.same({ "fzf", "ripgrep", "homebrew/cask/iterm2" }, pkgs)
+    assert.same({ "homebrew/cask" }, taps)
+  end)
+end)
+
+describe("config", function()
+  it("resets to defaults on setup without opts", function()
+    plugin.setup()
+    -- ensure it doesn't error and retains table type
+    plugin.setup({})
+  end)
+  it("toggles dump_on_change", function()
+    plugin.setup({ dump_on_change = false })
+    assert.is_false(config.config.dump_on_change)
+    plugin.setup({ dump_on_change = true })
+    assert.is_true(config.config.dump_on_change)
   end)
 end)

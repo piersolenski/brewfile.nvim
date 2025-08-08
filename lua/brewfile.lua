@@ -1,10 +1,16 @@
 -- Homebrew Brewfile Management
 local M = {}
 
--- optional setup to satisfy plugin managers expecting it
-M._config = {}
+-- configuration
+M._defaults = {
+  -- when true, after a brew action completes, run `brew bundle dump` and reload buffer
+  dump_on_change = true,
+}
+M._config = vim.deepcopy(M._defaults)
+
+-- setup for lazy.nvim and others
 function M.setup(opts)
-  M._config = vim.tbl_deep_extend("force", M._config, opts or {})
+  M._config = vim.tbl_deep_extend("force", vim.deepcopy(M._defaults), opts or {})
 end
 
 -- Function to extract package names from brew lines
@@ -165,17 +171,19 @@ local function run_brew_command(command, packages)
         local brewfile_bufnr = vim.api.nvim_get_current_buf()
         local brewfile_path = vim.api.nvim_buf_get_name(brewfile_bufnr)
 
-        -- Open a split terminal and hook into TermClose
+        -- Open a split terminal and optionally hook into TermClose
         vim.cmd.split()
         vim.cmd(string.format("terminal %s", brew_cmd))
         vim.cmd.startinsert()
-        vim.api.nvim_create_autocmd("TermClose", {
-            buffer = 0, -- current (terminal) buffer
-            once = true,
-            callback = function()
-                dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
-            end,
-        })
+        if M._config.dump_on_change then
+          vim.api.nvim_create_autocmd("TermClose", {
+              buffer = 0, -- current (terminal) buffer
+              once = true,
+              callback = function()
+                  dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
+              end,
+          })
+        end
     end
 end
 
@@ -310,6 +318,17 @@ function M.info()
   else
     vim.notify("No valid packages found", vim.log.levels.WARN)
   end
+end
+
+--- Dump Brewfile and refresh the buffer
+function M.dump()
+  local brewfile_bufnr = vim.api.nvim_get_current_buf()
+  local brewfile_path = vim.api.nvim_buf_get_name(brewfile_bufnr)
+  if not brewfile_path or brewfile_path == "" then
+    vim.notify("Current buffer has no file path", vim.log.levels.WARN)
+    return
+  end
+  dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
 end
 
 return M

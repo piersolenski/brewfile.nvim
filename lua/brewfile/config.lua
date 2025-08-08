@@ -7,7 +7,9 @@ M.defaults = {
 M.config = vim.deepcopy(M.defaults)
 
 function M.setup(opts)
-  M.config = vim.tbl_deep_extend("force", vim.deepcopy(M.defaults), opts or {})
+  opts = opts or {}
+  vim.validate({ dump_on_change = { opts.dump_on_change, "boolean", true } })
+  M.config = vim.tbl_deep_extend("force", vim.deepcopy(M.defaults), opts)
 end
 
 return M

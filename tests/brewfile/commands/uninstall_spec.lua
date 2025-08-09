@@ -7,13 +7,14 @@ describe("commands.uninstall", function()
   end)
 
   it("handles packages and taps", function()
-    stub(vim.fn, "mode").returns("v")
+    stub(vim.api, "nvim_get_mode").returns({ mode = "v" })
     stub(vim.fn, "getpos").invokes(function(mark)
-      if mark == "'<" then
+      if mark == "v" then
         return { 0, 1, 0, 0 }
       end
-      return { 0, 2, 0, 0 }
+      return { 0, 0, 0, 0 }
     end)
+    stub(vim.fn, "getcurpos").returns({ 0, 2, 0, 0 })
     stub(vim.fn, "getline").invokes(function(i)
       if i == 1 then
         return 'brew "fzf"'
@@ -37,8 +38,9 @@ describe("commands.uninstall", function()
 
     assert.stub(vim.fn.confirm).was.called(1)
 
-    vim.fn.mode:revert()
+    vim.api.nvim_get_mode:revert()
     vim.fn.getpos:revert()
+    vim.fn.getcurpos:revert()
     vim.fn.getline:revert()
     vim.fn.confirm:revert()
     vim.api.nvim_get_current_buf:revert()

@@ -45,19 +45,25 @@ function M.extract_package_names(lines)
 end
 
 function M.get_target_lines()
-  local mode = vim.fn.mode()
+  local mode = vim.api.nvim_get_mode().mode
   local lines = {}
-  if mode == "v" or mode == "V" then
-    local start_pos = vim.fn.getpos("'<")
-    local end_pos = vim.fn.getpos("'>")
-    local start_row = start_pos[2]
-    local end_row = end_pos[2]
+
+  local is_visual = (mode:match("^[vV]") ~= nil) or mode == "\022" -- includes CTRL-V block mode
+  if is_visual then
+    local start_row = vim.fn.getpos("v")[2]
+    local end_row = vim.fn.getcurpos()[2]
+
+    if start_row > end_row then
+      start_row, end_row = end_row, start_row
+    end
+
     for i = start_row, end_row do
       table.insert(lines, vim.fn.getline(i))
     end
   else
     table.insert(lines, vim.fn.getline("."))
   end
+
   return lines
 end
 

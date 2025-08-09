@@ -5,11 +5,19 @@ A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https:
 ## ✨ Features
 
 * **Package Actions**: Install, upgrade, uninstall, force uninstall, and view info for packages.
-* **Tap Management**: Works with both regular packages and taps.
 * **Interactive Confirmation**: Prompts before performing destructive actions.
 * **Auto Brewfile Reload**: Dumps Brewfile and refreshes the buffer after changes.
 * **Terminal Integration**: Briefly opens a split terminal for command output.
 * **Visual Selection Support**: Manage multiple packages at once using visual mode.
+
+## 📦 Package Support
+
+This plugin supports managing packages from a variety of sources:
+
+- **Homebrew**: Standard `brew` packages.
+- **Cask**: `cask` packages for GUI applications.
+- **Mac App Store**: `mas` packages for App Store applications (Requires [mas-cli](https://github.com/mas-cli/mas)).
+- **VSCode**: `vscode` extensions (Requires [Visual Studio Code](https://code.visualstudio.com/)).
 
 ## 🔩 Installation
 

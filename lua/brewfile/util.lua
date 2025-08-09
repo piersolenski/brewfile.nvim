@@ -3,45 +3,45 @@ local M = {}
 function M.extract_package_names(lines)
   local packages = {}
   for _, line in ipairs(lines) do
-    if line:match("^%s*#") then goto continue end
-    local clean_line = line
-    clean_line = clean_line:gsub("^%s+", "")
-    clean_line = clean_line:gsub("%s+$", "")
+    if line:match("^%s*#") then
+      goto continue
+    end
+    local clean_line = line:gsub("^%s+", ""):gsub("%s+$", "")
 
-    local package = clean_line:match('brew%s+"([^"]+)"')
-    if package then
-      table.insert(packages, package)
+    local brew_pkg = clean_line:match("^brew%s+[\"']([^\"']+)[\"']")
+    if brew_pkg then
+      table.insert(packages, { name = brew_pkg, type = "brew" })
+      goto continue
     end
 
-    local tap = clean_line:match('tap%s+"([^"]+)"')
-    if tap then
-      table.insert(packages, tap)
+    local tap_pkg = clean_line:match("^tap%s+[\"']([^\"']+)[\"']")
+    if tap_pkg then
+      table.insert(packages, { name = tap_pkg, type = "tap" })
+      goto continue
     end
+
+    local cask_pkg = clean_line:match("^cask%s+[\"']([^\"']+)[\"']")
+    if cask_pkg then
+      table.insert(packages, { name = cask_pkg, type = "cask" })
+      goto continue
+    end
+
+    local mas_pkg_id = clean_line:match("^mas%s+.-id:%s*(%d+)")
+    if mas_pkg_id then
+      local mas_pkg_name = clean_line:match("^mas%s+[\"']([^\"']+)[\"']")
+      table.insert(packages, { name = mas_pkg_id, type = "mas", displayName = mas_pkg_name or mas_pkg_id })
+      goto continue
+    end
+
+    local vscode_pkg = clean_line:match("^vscode%s+[\"']([^\"']+)[\"']")
+    if vscode_pkg then
+      table.insert(packages, { name = vscode_pkg, type = "vscode" })
+      goto continue
+    end
+
     ::continue::
   end
   return packages
-end
-
-function M.parse_packages_and_taps(lines)
-  local regular_packages, taps = {}, {}
-  for _, line in ipairs(lines) do
-    if line:match("^%s*#") then goto continue end
-    local clean_line = line
-    clean_line = clean_line:gsub("^%s+", "")
-    clean_line = clean_line:gsub("%s+$", "")
-
-    local package = clean_line:match('brew%s+"([^"]+)"')
-    if package then
-      table.insert(regular_packages, package)
-    end
-
-    local tap = clean_line:match('tap%s+"([^"]+)"')
-    if tap then
-      table.insert(taps, tap)
-    end
-    ::continue::
-  end
-  return regular_packages, taps
 end
 
 function M.get_target_lines()

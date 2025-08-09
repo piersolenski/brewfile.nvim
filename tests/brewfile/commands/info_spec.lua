@@ -10,10 +10,18 @@ describe("commands.info", function()
   it("notifies with brew info", function()
     stub(vim.fn, "mode").returns("n")
     stub(vim.fn, "getline").returns('brew "fd"')
+    stub(vim.fn, "confirm").returns(1)
     stub(vim, "notify")
 
     local original_cmd = vim.cmd
-    vim.cmd = function() end
+    vim.cmd = setmetatable({
+      split = function() end,
+      startinsert = function() end,
+    }, {
+      __call = function(_, _)
+        -- swallow terminal invocation
+      end,
+    })
 
     plugin.info()
 
@@ -21,6 +29,7 @@ describe("commands.info", function()
 
     vim.fn.mode:revert()
     vim.fn.getline:revert()
+    vim.fn.confirm:revert()
     vim.notify:revert()
     vim.cmd = original_cmd
   end)

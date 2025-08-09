@@ -23,9 +23,20 @@ describe("parsing", function()
       ' # tap "ignored/tap" ',
       'brew "homebrew/cask/iterm2"',
     }
-    local pkgs, taps = util.parse_packages_and_taps(lines)
-    assert.same({ "fzf", "ripgrep", "homebrew/cask/iterm2" }, pkgs)
-    assert.same({ "homebrew/cask" }, taps)
+    local packages = util.extract_package_names(lines)
+
+    local brew_names, tap_names = {}, {}
+    for _, pkg in ipairs(packages) do
+      if pkg.type == "brew" then
+        table.insert(brew_names, pkg.name)
+      end
+      if pkg.type == "tap" then
+        table.insert(tap_names, pkg.name)
+      end
+    end
+
+    assert.same({ "fzf", "ripgrep", "homebrew/cask/iterm2" }, brew_names)
+    assert.same({ "homebrew/cask" }, tap_names)
   end)
 end)
 

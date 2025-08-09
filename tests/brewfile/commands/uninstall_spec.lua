@@ -35,7 +35,7 @@ describe("commands.uninstall", function()
 
     plugin.uninstall()
 
-    assert.stub(vim.fn.confirm).was.called(2)
+    assert.stub(vim.fn.confirm).was.called(1)
 
     vim.fn.mode:revert()
     vim.fn.getpos:revert()

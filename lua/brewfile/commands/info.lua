@@ -1,13 +1,13 @@
 local util = require("brewfile.util")
+local common = require("brewfile.commands.common")
 
 return function()
   local lines = util.get_target_lines()
-  local packages = util.extract_package_names(lines)
-  if #packages > 0 then
-    local brew_cmd = string.format("brew info %s", table.concat(packages, " "))
-    vim.cmd(string.format("split | terminal %s", brew_cmd))
-    vim.notify(string.format("Running: %s", brew_cmd), vim.log.levels.INFO)
-  else
-    vim.notify("No valid packages found", vim.log.levels.WARN)
+  if not lines or #lines == 0 then
+    vim.notify("No lines found", vim.log.levels.WARN)
+    return
   end
+
+  local packages = util.extract_package_names(lines)
+  common.run_command("info", packages)
 end

@@ -62,7 +62,7 @@ function M.run_command(action, package, confirm_needed)
 
   local cmd_template = command_map[package.type] and command_map[package.type][action]
   if cmd_template then
-    local cmd = string.format("%s %s", cmd_template, package.name)
+    local cmd = string.format("%s %q", cmd_template, package.name)
     vim.notify(string.format("Running: %s", cmd), vim.log.levels.INFO)
 
     vim.cmd.split()

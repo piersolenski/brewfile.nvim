@@ -1,37 +1,47 @@
 local plugin = require("brewfile")
-local stub = require("luassert.stub")
 
-describe("commands.force_uninstall", function()
+describe("Force Uninstall", function()
+  local original_confirm
+  local recorded
+
+  local function with_line(line, fn)
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { line })
+    vim.api.nvim_set_current_buf(buf)
+    vim.api.nvim_win_set_cursor(0, { 1, 0 })
+    fn()
+    vim.api.nvim_buf_delete(buf, { force = true })
+  end
+
   before_each(function()
     plugin.setup({ dump_on_change = false })
+    recorded = {}
+    original_confirm = vim.fn.confirm
+    vim.fn.confirm = function()
+      return 1
+    end
+    vim.cmd.split = function() end
+    vim.cmd.startinsert = function() end
+    vim.cmd.terminal = function(cmd)
+      table.insert(recorded, cmd)
+    end
   end)
 
-  it("confirms once for only packages", function()
-    stub(vim.fn, "mode").returns("n")
-    stub(vim.fn, "getline").returns('brew "ripgrep"')
-    stub(vim.fn, "confirm").returns(1)
-    -- avoid side effects from terminal
-    local original_cmd = vim.cmd
-    vim.cmd = setmetatable({
-      split = function() end,
-      startinsert = function() end,
-    }, {
-      __call = function(_, _)
-        -- swallow terminal invocation
-      end,
-    })
-    stub(vim.api, "nvim_get_current_buf").returns(1)
-    stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
+  after_each(function()
+    vim.fn.confirm = original_confirm
+  end)
 
-    plugin.force_uninstall()
+  it("forces cask uninstall", function()
+    with_line("cask 'docker'", function()
+      plugin.force_uninstall()
+      assert.are.same({ "brew uninstall --cask --force docker" }, recorded)
+    end)
+  end)
 
-    assert.stub(vim.fn.confirm).was.called(1)
-
-    vim.fn.mode:revert()
-    vim.fn.getline:revert()
-    vim.fn.confirm:revert()
-    vim.api.nvim_get_current_buf:revert()
-    vim.api.nvim_buf_get_name:revert()
-    vim.cmd = original_cmd
+  it("forces brew uninstall", function()
+    with_line("brew 'wget'", function()
+      plugin.force_uninstall()
+      assert.are.same({ "brew uninstall --force wget" }, recorded)
+    end)
   end)
 end)

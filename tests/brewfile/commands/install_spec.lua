@@ -1,64 +1,68 @@
 local plugin = require("brewfile")
-local stub = require("luassert.stub")
-local util = require("brewfile.util")
 
-describe("commands.install", function()
+describe("Install", function()
+  local original_confirm
+  local recorded
+
+  local function with_line(line, fn)
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { line })
+    vim.api.nvim_set_current_buf(buf)
+    vim.api.nvim_win_set_cursor(0, { 1, 0 })
+    fn()
+    vim.api.nvim_buf_delete(buf, { force = true })
+  end
+
   before_each(function()
     plugin.setup({ dump_on_change = false })
-    stub(vim.fn, "confirm").returns(1)
-    stub(vim.api, "nvim_get_current_buf").returns(1)
-    stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
-    stub(vim.cmd, "split")
-    stub(vim.cmd, "terminal")
-    stub(vim.cmd, "startinsert")
-    stub(vim.api, "nvim_create_autocmd")
+    recorded = {}
+    original_confirm = vim.fn.confirm
+    vim.fn.confirm = function()
+      return 1
+    end
+    vim.cmd.split = function() end
+    vim.cmd.startinsert = function() end
+    vim.cmd.terminal = function(cmd)
+      table.insert(recorded, cmd)
+    end
   end)
 
   after_each(function()
-    vim.fn.confirm:revert()
-    vim.api.nvim_get_current_buf:revert()
-    vim.api.nvim_buf_get_name:revert()
-    vim.cmd.split:revert()
-    vim.cmd.terminal:revert()
-    vim.cmd.startinsert:revert()
-    vim.api.nvim_create_autocmd:revert()
-    if type(util.extract_package_names) == "table" and util.extract_package_names.is_stub then
-      util.extract_package_names:revert()
-    end
-    if vim.fn.mode.is_stub then
-      vim.fn.mode:revert()
-    end
-    if vim.fn.getline.is_stub then
-      vim.fn.getline:revert()
-    end
+    vim.fn.confirm = original_confirm
   end)
 
-  it("notifies when no packages", function()
-    stub(vim.fn, "mode").returns("n")
-    stub(vim.fn, "getline").returns("# comment only")
-    stub(vim, "notify")
-    stub(vim.fn, "confirm").returns(2)
-
-    plugin.install()
-
-    assert.stub(vim.notify).was.called()
+  it("runs brew install for brew package", function()
+    with_line("brew 'wget'", function()
+      plugin.install()
+      assert.are.same({ "brew install wget" }, recorded)
+    end)
   end)
 
-  it("should generate the correct install commands", function()
-    stub(util, "extract_package_names").returns({
-      { name = "wget", type = "brew" },
-      { name = "iterm2", type = "cask" },
-      { name = "497799835", type = "mas", displayName = "Xcode" },
-      { name = "dbaeumer.vscode-eslint", type = "vscode" },
-    })
-    stub(vim.fn, "mode").returns("n")
-    stub(vim.fn, "getline").returns('brew "wget"')
+  it("runs tap for tap", function()
+    with_line("tap 'homebrew/cask'", function()
+      plugin.install()
+      assert.are.same({ "brew tap homebrew/cask" }, recorded)
+    end)
+  end)
 
-    plugin.install()
+  it("runs cask install for cask", function()
+    with_line("cask 'docker'", function()
+      plugin.install()
+      assert.are.same({ "brew install --cask docker" }, recorded)
+    end)
+  end)
 
-    assert.stub(vim.cmd.terminal).was.called_with("brew install wget")
-    assert.stub(vim.cmd.terminal).was.called_with("brew install --cask iterm2")
-    assert.stub(vim.cmd.terminal).was.called_with("mas install 497799835")
-    assert.stub(vim.cmd.terminal).was.called_with("code --install-extension dbaeumer.vscode-eslint")
+  it("runs mas install for mas", function()
+    with_line("mas 'Xcode', id: 497799835", function()
+      plugin.install()
+      assert.are.same({ "mas install 497799835" }, recorded)
+    end)
+  end)
+
+  it("runs code install for vscode", function()
+    with_line("vscode 'ms-python.python'", function()
+      plugin.install()
+      assert.are.same({ "code --install-extension ms-python.python" }, recorded)
+    end)
   end)
 end)

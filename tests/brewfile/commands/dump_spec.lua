@@ -1,19 +1,34 @@
 local plugin = require("brewfile")
-local util = require("brewfile.util")
-local stub = require("luassert.stub")
 
-describe("commands.dump", function()
-  it("delegates to util.dump_brewfile_and_reload", function()
-    stub(vim.api, "nvim_get_current_buf").returns(7)
-    stub(vim.api, "nvim_buf_get_name").returns("/tmp/Brewfile")
-    stub(util, "dump_brewfile_and_reload")
+describe("Dump", function()
+  it("runs brew bundle dump and reloads", function()
+    -- Create a scratch buffer with a file path
+    local tmpfile = vim.fn.tempname()
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_name(buf, tmpfile)
+    vim.api.nvim_set_current_buf(buf)
+
+    -- Spy on util.run_system by monkeypatching to instantly call on_exit(0)
+    local util = require("brewfile.util")
+    local original = util.run_system
+    local called_args
+    util.run_system = function(args, on_exit)
+      called_args = args
+      on_exit(0)
+    end
 
     plugin.dump()
 
-    assert.stub(util.dump_brewfile_and_reload).was.called_with("/tmp/Brewfile", 7)
+    -- Validate correct brew command was constructed
+    assert.is_truthy(called_args)
+    assert.are.same("brew", called_args[1])
+    assert.are.same("bundle", called_args[2])
+    assert.are.same("dump", called_args[3])
 
-    vim.api.nvim_get_current_buf:revert()
-    vim.api.nvim_buf_get_name:revert()
-    util.dump_brewfile_and_reload:revert()
+    -- Restore
+    util.run_system = original
+
+    -- Cleanup
+    vim.api.nvim_buf_delete(buf, { force = true })
   end)
 end)

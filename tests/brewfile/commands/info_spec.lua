@@ -1,36 +1,54 @@
 local plugin = require("brewfile")
-local stub = require("luassert.stub")
-local match = require("luassert.match")
 
-describe("commands.info", function()
+describe("Info", function()
+  local original_confirm
+  local recorded
+
+  local function with_line(line, fn)
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { line })
+    vim.api.nvim_set_current_buf(buf)
+    vim.api.nvim_win_set_cursor(0, { 1, 0 })
+    fn()
+    vim.api.nvim_buf_delete(buf, { force = true })
+  end
+
   before_each(function()
     plugin.setup({ dump_on_change = false })
+    recorded = {}
+    original_confirm = vim.fn.confirm
+    vim.fn.confirm = function()
+      return 1
+    end
+    vim.cmd.split = function() end
+    vim.cmd.startinsert = function() end
+    vim.cmd.terminal = function(cmd)
+      table.insert(recorded, cmd)
+    end
   end)
 
-  it("notifies with brew info", function()
-    stub(vim.fn, "mode").returns("n")
-    stub(vim.fn, "getline").returns('brew "fd"')
-    stub(vim.fn, "confirm").returns(1)
-    stub(vim, "notify")
+  after_each(function()
+    vim.fn.confirm = original_confirm
+  end)
 
-    local original_cmd = vim.cmd
-    vim.cmd = setmetatable({
-      split = function() end,
-      startinsert = function() end,
-    }, {
-      __call = function(_, _)
-        -- swallow terminal invocation
-      end,
-    })
+  it("shows brew info for brew package", function()
+    with_line("brew 'wget'", function()
+      plugin.info()
+      assert.are.same({ "brew info wget" }, recorded)
+    end)
+  end)
 
-    plugin.info()
+  it("shows cask info for cask", function()
+    with_line("cask 'docker'", function()
+      plugin.info()
+      assert.are.same({ "brew info --cask docker" }, recorded)
+    end)
+  end)
 
-    assert.stub(vim.notify).was.called_with(match.matches("brew info"), vim.log.levels.INFO)
-
-    vim.fn.mode:revert()
-    vim.fn.getline:revert()
-    vim.fn.confirm:revert()
-    vim.notify:revert()
-    vim.cmd = original_cmd
+  it("shows tap info for tap", function()
+    with_line("tap 'homebrew/cask'", function()
+      plugin.info()
+      assert.are.same({ "brew info homebrew/cask" }, recorded)
+    end)
   end)
 end)

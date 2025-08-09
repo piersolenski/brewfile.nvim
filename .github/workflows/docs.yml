@@ -11,26 +11,21 @@ on:
 jobs:
   docs:
     runs-on: ubuntu-latest
-    name: README.md to vimdoc
+    permissions:
+      contents: write
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          # Fetch full history for create-pull-request to work properly
-          fetch-depth: 0
+      - uses: actions/checkout@v4
       - name: panvimdoc
         uses: kdheepak/panvimdoc@main
         with:
-          vimdoc: ${{ github.event.repository.name }}
-          version: "Neovim"
+          vimdoc: brewfile.nvim
+          version: "Neovim >= 0.8.0"
           demojify: true
           treesitter: true
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+      - name: Push changes
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: auto-generate vimdocs"
-          title: "Auto-generate vimdocs"
-          body: "Automatically generated vimdocs from README.md"
-          branch: auto-docs
-          delete-branch: true
+          commit_message: "auto-generate vimdoc"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"

@@ -1,10 +1,11 @@
-*brewfile.nvim.txt*       For Neovim >= 0.8.0      Last change: 2025 August 08
+*brewfile.nvim.txt*       For Neovim >= 0.8.0      Last change: 2025 August 09
 
 ==============================================================================
 Table of Contents                            *brewfile.nvim-table-of-contents*
 
 1. brewfile.nvim                                 |brewfile.nvim-brewfile.nvim|
   - Features                            |brewfile.nvim-brewfile.nvim-features|
+  - Package Support              |brewfile.nvim-brewfile.nvim-package-support|
   - Installation                    |brewfile.nvim-brewfile.nvim-installation|
   - ‍‍‍ Related projects|brewfile.nvim-brewfile.nvim-‍‍‍-related-projects|
 
@@ -18,11 +19,20 @@ A Neovim plugin for managing your Homebrew <https://brew.sh/> Brewfile
 FEATURES                                *brewfile.nvim-brewfile.nvim-features*
 
 - **Package Actions**Install, upgrade, uninstall, force uninstall, and view info for packages.
-- **Tap Management**Works with both regular packages and taps.
 - **Interactive Confirmation**Prompts before performing destructive actions.
 - **Auto Brewfile Reload**Dumps Brewfile and refreshes the buffer after changes.
 - **Terminal Integration**Briefly opens a split terminal for command output.
 - **Visual Selection Support**Manage multiple packages at once using visual mode.
+
+
+PACKAGE SUPPORT                  *brewfile.nvim-brewfile.nvim-package-support*
+
+This plugin supports managing packages from a variety of sources:
+
+- **Homebrew**Standard `brew` packages.
+- **Cask**`cask` packages for GUI applications.
+- **Mac App Store**`mas` packages for App Store applications (Requires mas-cli <https://github.com/mas-cli/mas>).
+- **VSCode**`vscode` extensions (Requires Visual Studio Code <https://code.visualstudio.com/>).
 
 
 INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*

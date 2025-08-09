@@ -13,9 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     name: README.md to vimdoc
     steps:
-      - name: Checkout  repo
+      - name: Checkout repo
         uses: actions/checkout@v4
-
+        with:
+          # Fetch full history for create-pull-request to work properly
+          fetch-depth: 0
       - name: panvimdoc
         uses: kdheepak/panvimdoc@main
         with:
@@ -23,7 +25,6 @@ jobs:
           version: "Neovim"
           demojify: true
           treesitter: true
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:

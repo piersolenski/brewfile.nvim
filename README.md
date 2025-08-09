@@ -24,7 +24,7 @@ This plugin supports managing packages from a variety of sources:
     opts = {
         -- Auto-dump Brewfile after brew commands finish
         dump_on_change = true,
-        -- Show confirm prompts for uninstall actions
+        -- Show confirmation prompts for uninstall actions
         confirmation_prompt = true,
     },
 	keys = {

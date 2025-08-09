@@ -41,7 +41,7 @@ local command_map = {
   },
 }
 
-function M.run_command(action, package)
+function M.run_command(action, package, confirm_needed)
   if not package then
     vim.notify("No valid package found", vim.log.levels.WARN)
     return
@@ -49,14 +49,12 @@ function M.run_command(action, package)
 
   local package_name = package.displayName or package.name
 
-  local choice = vim.fn.confirm(
-    string.format("%s package: %s?", action:gsub("^%l", string.upper), package_name),
-    "&Yes\n&No",
-    2
-  )
-
-  if choice ~= 1 then
-    return
+  if confirm_needed then
+    local choice =
+      vim.fn.confirm(string.format("%s package: %s?", action:gsub("^%l", string.upper), package_name), "&Yes\n&No", 2)
+    if choice ~= 1 then
+      return
+    end
   end
 
   local brewfile_bufnr = vim.api.nvim_get_current_buf()

@@ -9,5 +9,5 @@ return function()
   end
 
   local package = util.extract_package(line)
-  common.run_command("upgrade", package)
+  common.run_command("upgrade", package, false)
 end

@@ -49,7 +49,7 @@ function M.run_command(action, package, confirm_needed)
 
   local package_name = package.displayName or package.name
 
-  if confirm_needed then
+  if confirm_needed and config.config.confirmation_prompt then
     local choice =
       vim.fn.confirm(string.format("%s package: %s?", action:gsub("^%l", string.upper), package_name), "&Yes\n&No", 2)
     if choice ~= 1 then

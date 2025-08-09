@@ -4,10 +4,7 @@ A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https:
 
 ## ✨ Features
 
-* **Package Actions**: Install, upgrade, uninstall, force uninstall, and view info for packages.
-* **Interactive Confirmation**: Prompts before performing destructive actions.
-* **Auto Brewfile Reload**: Dumps Brewfile and refreshes the buffer after changes.
-* **Terminal Integration**: Briefly opens a split terminal for command output.
+Manage your packages with ease — install, upgrade, uninstall, force uninstall, or view info without leaving Neovim. After changes are made, the Brewfile is automatically dumped to keep it up-to-date.
 
 ## 📦 Package Support
 
@@ -24,10 +21,12 @@ This plugin supports managing packages from a variety of sources:
 -- Lazy
 {
 	"piersolenski/brewfile.nvim",
-	opts = {
-		-- Auto-dump Brewfile after brew commands finish
-		dump_on_change = true,
-	},
+    opts = {
+        -- Auto-dump Brewfile after brew commands finish
+        dump_on_change = true,
+        -- Show confirm prompts for uninstall actions
+        confirmation_prompt = true,
+    },
 	keys = {
 		{
 			"<leader>bi",

@@ -14,7 +14,7 @@ describe("Force Uninstall", function()
   end
 
   before_each(function()
-    plugin.setup({ dump_on_change = false })
+    plugin.setup({ dump_on_change = false, confirmation_prompt = true })
     recorded = {}
     original_confirm = vim.fn.confirm
     vim.fn.confirm = function()
@@ -42,6 +42,20 @@ describe("Force Uninstall", function()
     with_line("brew 'wget'", function()
       plugin.force_uninstall()
       assert.are.same({ "brew uninstall --force wget" }, recorded)
+    end)
+  end)
+
+  it("skips confirm when confirm=false", function()
+    plugin.setup({ dump_on_change = false, confirmation_prompt = false })
+    local asked = false
+    vim.fn.confirm = function()
+      asked = true
+      return 2
+    end
+    with_line("brew 'wget'", function()
+      plugin.force_uninstall()
+      assert.are.same({ "brew uninstall --force wget" }, recorded)
+      assert.is_false(asked)
     end)
   end)
 end)

@@ -41,20 +41,16 @@ local command_map = {
   },
 }
 
-function M.run_command(action, packages)
-  if #packages == 0 then
-    vim.notify("No valid packages found", vim.log.levels.WARN)
+function M.run_command(action, package)
+  if not package then
+    vim.notify("No valid package found", vim.log.levels.WARN)
     return
   end
 
-  local package_names = {}
-  for _, pkg in ipairs(packages) do
-    table.insert(package_names, pkg.displayName or pkg.name)
-  end
-  local package_list = table.concat(package_names, ", ")
+  local package_name = package.displayName or package.name
 
   local choice = vim.fn.confirm(
-    string.format("%s %d package(s): %s?", action:gsub("^%l", string.upper), #packages, package_list),
+    string.format("%s package: %s?", action:gsub("^%l", string.upper), package_name),
     "&Yes\n&No",
     2
   )
@@ -66,35 +62,33 @@ function M.run_command(action, packages)
   local brewfile_bufnr = vim.api.nvim_get_current_buf()
   local brewfile_path = vim.api.nvim_buf_get_name(brewfile_bufnr)
 
-  for _, package in ipairs(packages) do
-    local cmd_template = command_map[package.type] and command_map[package.type][action]
-    if cmd_template then
-      local cmd = string.format("%s %s", cmd_template, package.name)
-      vim.notify(string.format("Running: %s", cmd), vim.log.levels.INFO)
+  local cmd_template = command_map[package.type] and command_map[package.type][action]
+  if cmd_template then
+    local cmd = string.format("%s %s", cmd_template, package.name)
+    vim.notify(string.format("Running: %s", cmd), vim.log.levels.INFO)
 
-      vim.cmd.split()
-      if vim.cmd.terminal then
-        vim.cmd.terminal(cmd)
-      else
-        vim.cmd(string.format("terminal %s", cmd))
-      end
-      vim.cmd.startinsert()
-
-      if config.config.dump_on_change then
-        vim.api.nvim_create_autocmd("TermClose", {
-          buffer = 0,
-          once = true,
-          callback = function()
-            util.dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
-          end,
-        })
-      end
+    vim.cmd.split()
+    if vim.cmd.terminal then
+      vim.cmd.terminal(cmd)
     else
-      vim.notify(
-        string.format("Action '%s' not supported for package type '%s' (%s)", action, package.type, package.name),
-        vim.log.levels.WARN
-      )
+      vim.cmd(string.format("terminal %s", cmd))
     end
+    vim.cmd.startinsert()
+
+    if config.config.dump_on_change then
+      vim.api.nvim_create_autocmd("TermClose", {
+        buffer = 0,
+        once = true,
+        callback = function()
+          util.dump_brewfile_and_reload(brewfile_path, brewfile_bufnr)
+        end,
+      })
+    end
+  else
+    vim.notify(
+      string.format("Action '%s' not supported for package type '%s' (%s)", action, package.type, package.name),
+      vim.log.levels.WARN
+    )
   end
 end
 

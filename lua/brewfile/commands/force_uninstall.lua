@@ -2,12 +2,12 @@ local util = require("brewfile.util")
 local common = require("brewfile.commands.common")
 
 return function()
-  local lines = util.get_target_lines()
-  if not lines or #lines == 0 then
-    vim.notify("No lines found", vim.log.levels.WARN)
+  local line = util.get_current_line()
+  if not line or line == "" then
+    vim.notify("No line found", vim.log.levels.WARN)
     return
   end
 
-  local packages = util.extract_package_names(lines)
-  common.run_command("force_uninstall", packages)
+  local package = util.extract_package(line)
+  common.run_command("force_uninstall", package)
 end

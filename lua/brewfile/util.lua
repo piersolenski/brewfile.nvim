@@ -1,70 +1,45 @@
 local M = {}
 
-function M.extract_package_names(lines)
-  local packages = {}
-  for _, line in ipairs(lines) do
-    if line:match("^%s*#") then
-      goto continue
-    end
-    local clean_line = line:gsub("^%s+", ""):gsub("%s+$", "")
-
-    local brew_pkg = clean_line:match("^brew%s+[\"']([^\"']+)[\"']")
-    if brew_pkg then
-      table.insert(packages, { name = brew_pkg, type = "brew" })
-      goto continue
-    end
-
-    local tap_pkg = clean_line:match("^tap%s+[\"']([^\"']+)[\"']")
-    if tap_pkg then
-      table.insert(packages, { name = tap_pkg, type = "tap" })
-      goto continue
-    end
-
-    local cask_pkg = clean_line:match("^cask%s+[\"']([^\"']+)[\"']")
-    if cask_pkg then
-      table.insert(packages, { name = cask_pkg, type = "cask" })
-      goto continue
-    end
-
-    local mas_pkg_id = clean_line:match("^mas%s+.-id:%s*(%d+)")
-    if mas_pkg_id then
-      local mas_pkg_name = clean_line:match("^mas%s+[\"']([^\"']+)[\"']")
-      table.insert(packages, { name = mas_pkg_id, type = "mas", displayName = mas_pkg_name or mas_pkg_id })
-      goto continue
-    end
-
-    local vscode_pkg = clean_line:match("^vscode%s+[\"']([^\"']+)[\"']")
-    if vscode_pkg then
-      table.insert(packages, { name = vscode_pkg, type = "vscode" })
-      goto continue
-    end
-
-    ::continue::
+function M.extract_package(line)
+  if not line or line == "" then
+    return nil
   end
-  return packages
+  if line:match("^%s*#") then
+    return nil
+  end
+  local clean_line = line:gsub("^%s+", ""):gsub("%s+$", "")
+
+  local brew_pkg = clean_line:match("^brew%s+[\"']([^\"']+)[\"']")
+  if brew_pkg then
+    return { name = brew_pkg, type = "brew" }
+  end
+
+  local tap_pkg = clean_line:match("^tap%s+[\"']([^\"']+)[\"']")
+  if tap_pkg then
+    return { name = tap_pkg, type = "tap" }
+  end
+
+  local cask_pkg = clean_line:match("^cask%s+[\"']([^\"']+)[\"']")
+  if cask_pkg then
+    return { name = cask_pkg, type = "cask" }
+  end
+
+  local mas_pkg_id = clean_line:match("^mas%s+.-id:%s*(%d+)")
+  if mas_pkg_id then
+    local mas_pkg_name = clean_line:match("^mas%s+[\"']([^\"']+)[\"']")
+    return { name = mas_pkg_id, type = "mas", displayName = mas_pkg_name or mas_pkg_id }
+  end
+
+  local vscode_pkg = clean_line:match("^vscode%s+[\"']([^\"']+)[\"']")
+  if vscode_pkg then
+    return { name = vscode_pkg, type = "vscode" }
+  end
+
+  return nil
 end
 
-function M.get_target_lines()
-  local mode = vim.api.nvim_get_mode().mode
-  local lines = {}
-
-  local is_visual = (mode:match("^[vV]") ~= nil) or mode == "\022" -- includes CTRL-V block mode
-  if is_visual then
-    local start_row = vim.fn.getpos("v")[2]
-    local end_row = vim.fn.getcurpos()[2]
-
-    if start_row > end_row then
-      start_row, end_row = end_row, start_row
-    end
-
-    for i = start_row, end_row do
-      table.insert(lines, vim.fn.getline(i))
-    end
-  else
-    table.insert(lines, vim.fn.getline("."))
-  end
-
-  return lines
+function M.get_current_line()
+  return vim.fn.getline(".")
 end
 
 function M.run_system(args, on_exit)

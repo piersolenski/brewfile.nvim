@@ -8,7 +8,6 @@ A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https:
 * **Interactive Confirmation**: Prompts before performing destructive actions.
 * **Auto Brewfile Reload**: Dumps Brewfile and refreshes the buffer after changes.
 * **Terminal Integration**: Briefly opens a split terminal for command output.
-* **Visual Selection Support**: Manage multiple packages at once using visual mode.
 
 ## 📦 Package Support
 
@@ -35,8 +34,8 @@ This plugin supports managing packages from a variety of sources:
 			function()
 				require("brewfile").install()
 			end,
-            desc = "Brew install package(s)",
-            mode = { "n", "v" },
+            desc = "Brew install package",
+            mode = { "n" },
 		},
         {
             "<leader>bb",
@@ -51,24 +50,24 @@ This plugin supports managing packages from a variety of sources:
 			function()
 				require("brewfile").uninstall()
 			end,
-            desc = "Brew uninstall package(s)",
-            mode = { "n", "v" },
+            desc = "Brew uninstall package",
+            mode = { "n" },
 		},
 		{
 			"<leader>bD",
 			function()
 				require("brewfile").force_uninstall()
 			end,
-            desc = "Brew force uninstall package(s)",
-            mode = { "n", "v" },
+            desc = "Brew force uninstall package",
+            mode = { "n" },
 		},
 		{
 			"<leader>bI",
 			function()
 				require("brewfile").info()
 			end,
-            desc = "Brew info for latest package",
-            mode = { "n", "v" },
+            desc = "Brew info for package",
+            mode = { "n" },
 		},
 	},
 }

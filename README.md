@@ -1,10 +1,17 @@
 # 🍺 brewfile.nvim
 
-A Neovim plugin for managing your [Homebrew](https://brew.sh/) [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) directly from the editor.
+Manage your [Homebrew](https://brew.sh/) [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) directly from Neovim!  
+
+If you're on macOS and use [Homebrew](https://brew.sh/) (and let's be honest, who doesn't?), you probably have a [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) to manage your packages declaratively. `brewfile.nvim` lets you manage your Brewfile without ever leaving the editor!
 
 ## ✨ Features
 
-Manage your packages with ease — install, upgrade, uninstall, force uninstall, or view info without leaving Neovim. After changes are made, the Brewfile is automatically dumped to keep it up-to-date.
+- **Install/uninstall packages** - Just position your cursor on any line in your Brewfile and hit your keybind  
+- **Auto-dump after changes** - Keeps your Brewfile in sync automatically  
+- **Multi-source support** - Works with brew formulas, casks, Mac App Store apps (via mas), and even VSCode extensions  
+- **Package info** - Get detailed package information without switching to terminal  
+- **Safety first** - Optional confirmation prompts for destructive actions  
+
 
 ## 📦 Package Support
 
@@ -70,6 +77,15 @@ This plugin supports managing packages from a variety of sources:
 		},
 	},
 }
+```
+
+## 🚀 Usage
+
+```sh
+# Position cursor on any line in your Brewfile
+brew "neovim"     -- <leader>bi to upgrade, <leader>bd to uninstall
+cask "firefox"    -- Works with casks too!
+mas "Xcode", id: 497799835  -- Even Mac App Store apps!
 ```
 
 ## 👨‍👩‍👧‍👦 Related projects

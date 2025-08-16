@@ -7,11 +7,9 @@ If you're on macOS and use [Homebrew](https://brew.sh/) (and let's be honest, wh
 ## ✨ Features
 
 - **Install/uninstall packages** - Just position your cursor on any line in your Brewfile and hit your keybind  
-- **Auto-dump after changes** - Keeps your Brewfile in sync automatically  
-- **Multi-source support** - Works with brew formulas, casks, Mac App Store apps (via mas), and even VSCode extensions  
-- **Package info** - Get detailed package information without switching to terminal  
+- **Auto-dumps Brewfile after changes** - Keeps your Brewfile in sync automatically  
+- **Package info** - Get detailed package information
 - **Safety first** - Optional confirmation prompts for destructive actions  
-
 
 ## 📦 Package Support
 

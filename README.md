@@ -90,3 +90,17 @@ mas "Xcode", id: 497799835  -- Even Mac App Store apps!
 
 - **[gx.nvim](https://github.com/chrishrb/gx.nvim)** - Open Brewfile links in browser
 - **[package-info.nvim](https://github.com/vuki656/package-info.nvim)** - Similar functionality for npm packages
+
+## 🤓 About the author
+
+As well as a passionate Vim enthusiast, I am a Full Stack Developer and Technical Lead from London, UK.
+
+Whether it's to discuss a project, talk shop or just say hi, I'd love to hear from you!
+
+- [Website](https://www.piersolenski.com/)
+- [CodePen](https://codepen.io/piers)
+- [LinkedIn](https://www.linkedin.com/in/piersolenski/)
+
+<a href='https://ko-fi.com/piersolenski' target='_blank'>
+  <img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+</a>

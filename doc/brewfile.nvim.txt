@@ -1,4 +1,4 @@
-*brewfile.nvim.txt*       For Neovim >= 0.8.0      Last change: 2025 August 17
+*brewfile.nvim.txt*     For Neovim >= 0.8.0     Last change: 2025 September 02
 
 ==============================================================================
 Table of Contents                            *brewfile.nvim-table-of-contents*
@@ -17,11 +17,13 @@ Table of Contents                            *brewfile.nvim-table-of-contents*
 Manage your Homebrew <https://brew.sh/> Brewfile
 <https://docs.brew.sh/Brew-Bundle-and-Brewfile> directly from Neovim!
 
-If you’re on macOS and use Homebrew <https://brew.sh/> (and let’s be
-honest, who doesn’t?), you probably have a Brewfile
+If you’re on macOS and use Homebrew <https://brew.sh/> (and if you’re not,
+please strongly consider doing so!), you probably have a Brewfile
 <https://docs.brew.sh/Brew-Bundle-and-Brewfile> to manage your packages
-declaratively. `brewfile.nvim` lets you manage your Brewfile without ever
-leaving the editor!
+declaratively. `brewfile.nvim` lets you manage your that Brewfile from within
+your favourite editor, giving you even less reasons to leave Vim or go outside.
+Why get Vitamin D when you can be installing and uninstalling apps, casks, and
+extensions at blazingly fast speeds?
 
 
 FEATURES                                *brewfile.nvim-brewfile.nvim-features*
@@ -64,11 +66,19 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
                 mode = { "n" },
             },
             {
-                "<leader>bb",
+                "<leader>br",
                 function()
                     require("brewfile").dump()
                 end,
-                desc = "Dump Brewfile and update the buffer",
+                desc = "Dump Brewfile and refresh the buffer",
+                mode = { "n" },
+            },
+            {
+                "<leader>bo",
+                function()
+                    require("brewfile").open_homepage()
+                end,
+                desc = "Open package homepage",
                 mode = { "n" },
             },
             {
@@ -92,10 +102,18 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
                 function()
                     require("brewfile").info()
                 end,
-                desc = "Brew info for package",
+                desc = "Brew package info",
                 mode = { "n" },
             },
-        },
+            {
+                "<leader>bu",
+                function()
+                    require("brewfile").upgrade()
+                end,
+                desc = "Brew upgrade package",
+                mode = { "n" },
+            }
+        }
     }
 <
 

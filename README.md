@@ -2,7 +2,7 @@
 
 Manage your [Homebrew](https://brew.sh/) [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) directly from Neovim!  
 
-If you're on macOS and use [Homebrew](https://brew.sh/) (and let's be honest, who doesn't?), you probably have a [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) to manage your packages declaratively. `brewfile.nvim` lets you manage your Brewfile without ever leaving the editor!
+If you're on macOS and use [Homebrew](https://brew.sh/) (and if you're not, please strongly consider doing so!), you probably have a [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) to manage your packages declaratively. `brewfile.nvim` lets you manage your that Brewfile from within your favourite editor, giving you even less reasons to leave Vim or go outside. Why get Vitamin D when you can be installing and uninstalling apps, casks, and extensions at blazingly fast speeds?
 
 ## ✨ Features
 
@@ -42,11 +42,19 @@ This plugin supports managing packages from a variety of sources:
             mode = { "n" },
 		},
         {
-            "<leader>bb",
+            "<leader>br",
             function()
                 require("brewfile").dump()
             end,
-            desc = "Dump Brewfile and update the buffer",
+            desc = "Dump Brewfile and refresh the buffer",
+            mode = { "n" },
+        },
+        {
+            "<leader>bo",
+            function()
+                require("brewfile").open_homepage()
+            end,
+            desc = "Open package homepage",
             mode = { "n" },
         },
 		{
@@ -70,10 +78,18 @@ This plugin supports managing packages from a variety of sources:
 			function()
 				require("brewfile").info()
 			end,
-            desc = "Brew info for package",
+            desc = "Brew package info",
             mode = { "n" },
-		},
-	},
+        },
+        {
+            "<leader>bu",
+            function()
+                require("brewfile").upgrade()
+            end,
+            desc = "Brew upgrade package",
+            mode = { "n" },
+        }
+	}
 }
 ```
 

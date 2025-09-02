@@ -42,11 +42,19 @@ This plugin supports managing packages from a variety of sources:
             mode = { "n" },
 		},
         {
-            "<leader>bb",
+            "<leader>br",
             function()
                 require("brewfile").dump()
             end,
-            desc = "Dump Brewfile and update the buffer",
+            desc = "Dump Brewfile and refresh the buffer",
+            mode = { "n" },
+        },
+        {
+            "<leader>bo",
+            function()
+                require("brewfile").open_homepage()
+            end,
+            desc = "Open package homepage",
             mode = { "n" },
         },
 		{
@@ -70,10 +78,18 @@ This plugin supports managing packages from a variety of sources:
 			function()
 				require("brewfile").info()
 			end,
-            desc = "Brew info for package",
+            desc = "Brew package info",
             mode = { "n" },
-		},
-	},
+        },
+        {
+            "<leader>bu",
+            function()
+                require("brewfile").upgrade()
+            end,
+            desc = "Brew upgrade package",
+            mode = { "n" },
+        }
+	}
 }
 ```
 

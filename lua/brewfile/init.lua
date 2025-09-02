@@ -30,4 +30,8 @@ function M.dump()
   require("brewfile.commands.dump")()
 end
 
+function M.open_homepage()
+  require("brewfile.commands.open_homepage").open_homepage()
+end
+
 return M

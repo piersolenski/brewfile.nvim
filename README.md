@@ -1,8 +1,8 @@
 # 🍺 brewfile.nvim
 
-Manage your [Homebrew](https://brew.sh/) [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) directly from Neovim!  
+If you're on macOS and use [Homebrew](https://brew.sh/), you probably have a [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) to manage your packages declaratively. `brewfile.nvim` lets you manage your that Brewfile from within your favourite editor, giving you even less reasons to leave Vim or go outside. Why get Vitamin D when you can be installing and uninstalling apps, casks, and extensions at blazingly fast speeds?
 
-If you're on macOS and use [Homebrew](https://brew.sh/) (and if you're not, please strongly consider doing so!), you probably have a [Brewfile](https://docs.brew.sh/Brew-Bundle-and-Brewfile) to manage your packages declaratively. `brewfile.nvim` lets you manage your that Brewfile from within your favourite editor, giving you even less reasons to leave Vim or go outside. Why get Vitamin D when you can be installing and uninstalling apps, casks, and extensions at blazingly fast speeds?
+https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e
 
 ## ✨ Features
 

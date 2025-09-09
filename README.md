@@ -34,6 +34,10 @@ This plugin supports managing packages from a variety of sources:
     },
 	keys = {
 		{
+			"<leader>b",
+			desc = "Brewfile",
+		},
+		{
 			"<leader>bi",
 			function()
 				require("brewfile").install()

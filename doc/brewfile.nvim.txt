@@ -1,4 +1,4 @@
-*brewfile.nvim.txt*     For Neovim >= 0.8.0     Last change: 2025 September 08
+*brewfile.nvim.txt*     For Neovim >= 0.8.0     Last change: 2025 September 09
 
 ==============================================================================
 Table of Contents                            *brewfile.nvim-table-of-contents*
@@ -56,6 +56,10 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
             confirmation_prompt = true,
         },
         keys = {
+            {
+                "<leader>b",
+                desc = "Brewfile",
+            },
             {
                 "<leader>bi",
                 function()

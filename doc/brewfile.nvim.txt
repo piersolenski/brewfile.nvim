@@ -1,4 +1,4 @@
-*brewfile.nvim.txt*     For Neovim >= 0.8.0     Last change: 2025 September 09
+*brewfile.nvim.txt*     For Neovim >= 0.8.0     Last change: 2025 September 13
 
 ==============================================================================
 Table of Contents                            *brewfile.nvim-table-of-contents*
@@ -30,7 +30,7 @@ FEATURES                                *brewfile.nvim-brewfile.nvim-features*
 - **Safety first** - Optional confirmation prompts for destructive actions
 
 
-https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e
+<https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e>
 
 
 PACKAGE SUPPORT                  *brewfile.nvim-brewfile.nvim-package-support*
@@ -48,26 +48,26 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
 >lua
     -- Lazy
     {
-        "piersolenski/brewfile.nvim",
+     "piersolenski/brewfile.nvim",
         opts = {
             -- Auto-dump Brewfile after brew commands finish
             dump_on_change = true,
             -- Show confirmation prompts for uninstall actions
             confirmation_prompt = true,
         },
-        keys = {
-            {
-                "<leader>b",
-                desc = "Brewfile",
-            },
-            {
-                "<leader>bi",
-                function()
-                    require("brewfile").install()
-                end,
+     keys = {
+      {
+       "<leader>b",
+       desc = "Brewfile",
+      },
+      {
+       "<leader>bi",
+       function()
+        require("brewfile").install()
+       end,
                 desc = "Brew install package",
                 mode = { "n" },
-            },
+      },
             {
                 "<leader>br",
                 function()
@@ -84,27 +84,27 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
                 desc = "Open package homepage",
                 mode = { "n" },
             },
-            {
-                "<leader>bd",
-                function()
-                    require("brewfile").uninstall()
-                end,
+      {
+       "<leader>bd",
+       function()
+        require("brewfile").uninstall()
+       end,
                 desc = "Brew uninstall package",
                 mode = { "n" },
-            },
-            {
-                "<leader>bD",
-                function()
-                    require("brewfile").force_uninstall()
-                end,
+      },
+      {
+       "<leader>bD",
+       function()
+        require("brewfile").force_uninstall()
+       end,
                 desc = "Brew force uninstall package",
                 mode = { "n" },
-            },
-            {
-                "<leader>bI",
-                function()
-                    require("brewfile").info()
-                end,
+      },
+      {
+       "<leader>bI",
+       function()
+        require("brewfile").info()
+       end,
                 desc = "Brew package info",
                 mode = { "n" },
             },
@@ -116,7 +116,7 @@ INSTALLATION                        *brewfile.nvim-brewfile.nvim-installation*
                 desc = "Brew upgrade package",
                 mode = { "n" },
             }
-        }
+     }
     }
 <
 
@@ -133,7 +133,7 @@ USAGE                                      *brewfile.nvim-brewfile.nvim-usage*
 
 ‍‍‍ RELATED PROJECTS*brewfile.nvim-brewfile.nvim-‍‍‍-related-projects*
 
-- **gx.nvim** - Open Brewfile links in browser
+- **gx.nvim** - Extends `gx` to open Brewfile links amongst others in browser
 - **package-info.nvim** - Similar functionality for npm packages
 
 

@@ -9,7 +9,7 @@ If you're on macOS and use [Homebrew](https://brew.sh/), you probably have a [Br
 - **Package info** - Get detailed package information
 - **Safety first** - Optional confirmation prompts for destructive actions
 
-https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e
+<https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e>
 
 ## 📦 Package Support
 
@@ -25,26 +25,26 @@ This plugin supports managing packages from a variety of sources:
 ```lua
 -- Lazy
 {
-	"piersolenski/brewfile.nvim",
+ "piersolenski/brewfile.nvim",
     opts = {
         -- Auto-dump Brewfile after brew commands finish
         dump_on_change = true,
         -- Show confirmation prompts for uninstall actions
         confirmation_prompt = true,
     },
-	keys = {
-		{
-			"<leader>b",
-			desc = "Brewfile",
-		},
-		{
-			"<leader>bi",
-			function()
-				require("brewfile").install()
-			end,
+ keys = {
+  {
+   "<leader>b",
+   desc = "Brewfile",
+  },
+  {
+   "<leader>bi",
+   function()
+    require("brewfile").install()
+   end,
             desc = "Brew install package",
             mode = { "n" },
-		},
+  },
         {
             "<leader>br",
             function()
@@ -61,27 +61,27 @@ This plugin supports managing packages from a variety of sources:
             desc = "Open package homepage",
             mode = { "n" },
         },
-		{
-			"<leader>bd",
-			function()
-				require("brewfile").uninstall()
-			end,
+  {
+   "<leader>bd",
+   function()
+    require("brewfile").uninstall()
+   end,
             desc = "Brew uninstall package",
             mode = { "n" },
-		},
-		{
-			"<leader>bD",
-			function()
-				require("brewfile").force_uninstall()
-			end,
+  },
+  {
+   "<leader>bD",
+   function()
+    require("brewfile").force_uninstall()
+   end,
             desc = "Brew force uninstall package",
             mode = { "n" },
-		},
-		{
-			"<leader>bI",
-			function()
-				require("brewfile").info()
-			end,
+  },
+  {
+   "<leader>bI",
+   function()
+    require("brewfile").info()
+   end,
             desc = "Brew package info",
             mode = { "n" },
         },
@@ -93,7 +93,7 @@ This plugin supports managing packages from a variety of sources:
             desc = "Brew upgrade package",
             mode = { "n" },
         }
-	}
+ }
 }
 ```
 
@@ -108,7 +108,7 @@ mas "Xcode", id: 497799835  -- Even Mac App Store apps!
 
 ## 👨‍👩‍👧‍👦 Related projects
 
-- **[gx.nvim](https://github.com/chrishrb/gx.nvim)** - Open Brewfile links in browser
+- **[gx.nvim](https://github.com/chrishrb/gx.nvim)** - Extends `gx` to open Brewfile links amongst others in browser
 - **[package-info.nvim](https://github.com/vuki656/package-info.nvim)** - Similar functionality for npm packages
 
 ## 🤓 About the author

@@ -42,6 +42,15 @@ function M.get_current_line()
   return vim.fn.getline(".")
 end
 
+function M.get_current_line_or_warn()
+  local line = M.get_current_line()
+  if not line or line == "" then
+    vim.notify("No line found", vim.log.levels.WARN)
+    return nil
+  end
+  return line
+end
+
 function M.run_system(args, on_exit)
   if vim.system then
     vim.system(args, { text = true }, function(obj)

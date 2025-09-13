@@ -2,9 +2,8 @@ local util = require("brewfile.util")
 local common = require("brewfile.commands.common")
 
 return function()
-  local line = util.get_current_line()
-  if not line or line == "" then
-    vim.notify("No line found", vim.log.levels.WARN)
+  local line = util.get_current_line_or_warn()
+  if not line then
     return
   end
 

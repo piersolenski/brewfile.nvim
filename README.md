@@ -7,6 +7,7 @@ If you're on macOS and use [Homebrew](https://brew.sh/), you probably have a [Br
 - **Install/uninstall packages** - Just position your cursor on any line in your Brewfile and hit your keybind
 - **Auto-dumps Brewfile after changes** - Keeps your Brewfile in sync automatically
 - **Package info** - Get detailed package information
+- **Open Brew homepages** - Open the homepage of any package in your default browser
 - **Safety first** - Optional confirmation prompts for destructive actions
 
 <https://github.com/user-attachments/assets/2426cb0b-2fe3-465c-a44d-5234f260028e>
